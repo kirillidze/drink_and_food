@@ -22,9 +22,9 @@
 		  constructor(name) {
 		    this._nameStorage = name;
 		    //если в локальном хранилище нет такого ключа, то создаём
-		    //со значением пустого массива, иначе ничего не делаем
+		    //со значением пустого объекта, иначе ничего не делаем
 		    if (!localStorage[this._nameStorage]) {
-		    	localStorage[this._nameStorage] = '[]';
+		    	localStorage[this._nameStorage] = '{}';
 		    }
 
 		  }
@@ -61,17 +61,15 @@
 		  }
 		  getKeys() {
 		    let storage = JSON.parse(localStorage[this._nameStorage]);
-		    if(storage.length === 0) {
+		    if(Object.keys(storage).length === 0) {
 		      console.log('В базе нет данных');
 		    } else {
-		      //показываем весь список, но без первого значения
-		      //т.к. это имя самого списка
-		      console.log(Object.keys(storage).slice(1));
+		      console.log(Object.keys(storage));
 		    }
 
 		  }
 		}
-		//добавляем объекты класса
+
 		let drinkStorage = new TLocalStorage('drinks');
 		let foodStorage = new TLocalStorage('food');
 
@@ -154,6 +152,8 @@
 			}
 
 		}
+
+
 
 	</script>
 
