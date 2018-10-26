@@ -3,159 +3,21 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Drinks and food</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
-	<input type="button" value="Ввести напиток" onclick="getInfo('drinks')">
-	<input type="button" value="Инфо о напитке" onclick="showInfo('drinks')">
-	<input type="button" value="Удалить напиток" onclick="deleteItem('drinks')">
-	<input type="button" value="Список напитков" onclick="getList('drinks')">
+	<input id="GET-DRINK" type="button" value="Ввести напиток">
+	<input id="SHOW-DRINK" type="button" value="Инфо о напитке">
+	<input id="DEL-DRINK" type="button" value="Удалить напиток">
+	<input id="LIST-DRINK" type="button" value="Список напитков">
 	<hr>
-	<input type="button" value="Ввести блюдо" onclick="getInfo('food')">
-	<input type="button" value="Инфо о блюде" onclick="showInfo('food')">
-	<input type="button" value="Удалить блюдо" onclick="deleteItem('food')">
-	<input type="button" value="Список блюд" onclick="getList('food')">
-
-	<script>
-		'use strict';
-
-		class TLocalStorage {
-		  constructor(name) {
-		    this._nameStorage = name;
-		    //если в локальном хранилище нет такого ключа, то создаём
-		    //со значением пустого объекта, иначе ничего не делаем
-		    if (!localStorage[this._nameStorage]) {
-		    	localStorage[this._nameStorage] = '{}';
-		    }
-
-		  }
-		  addValue(key,value) {
-		  	//читаем из локального хранилища
-		  	let storage = JSON.parse(localStorage[this._nameStorage]);
-		  	//добавляем информацию в массив
-		  	storage[key] = value;
-		   //сохраняем информацию в локальном хранилище
-		   localStorage[this._nameStorage] = JSON.stringify(storage);
-		  }
-		  getValue(key) {
-		  	//читаем из локального хранилища
-		    let storage = JSON.parse(localStorage[this._nameStorage]);
-		    if (key in storage) {
-		      //если ключ есть, то возвращаем его значение
-		      return storage[key];
-		    } else {
-		      return false;
-		    }
-		  }
-		  deleteValue(key) {
-		  	//читаем из локального хранилища
-		    let storage = JSON.parse(localStorage[this._nameStorage]);
-		    if (key in storage) {
-		      //если ключ есть, то удаляем его и перезаписываем
-		      //изменённый список в локальное хранилище
-		      delete storage[key];
-		      localStorage[this._nameStorage] = JSON.stringify(storage);
-		      return true;
-		    } else {
-		    return false;
-		    }
-		  }
-		  getKeys() {
-		    let storage = JSON.parse(localStorage[this._nameStorage]);
-		    if(Object.keys(storage).length === 0) {
-		      console.log('В базе нет данных');
-		    } else {
-		      console.log(Object.keys(storage));
-		    }
-
-		  }
-		}
-
-		let drinkStorage = new TLocalStorage('drinks');
-		let foodStorage = new TLocalStorage('food');
-
-		function getInfo(type) {
-			if(type === 'drinks') { //если это напиток
-				let drinkName = prompt('Введите название напитка');
-				if (drinkName) {
-				    let hasAlco = confirm('Напиток алкогольный?'),
-				        recipe = prompt('Введите рецепт напитка');
-				    (hasAlco === true) ? hasAlco ='Да' : hasAlco ='Нет';
-				    //вызываем метод чтобы добавить в список
-				    drinkStorage.addValue(drinkName, {'Алкоголь': hasAlco,
-				                                      'Рецепт': recipe});
-				}
-			} else { //если это еда
-				let foodName = prompt('Введите название блюда');
-				if (foodName) {
-				    let vegetable = confirm('Блюдо вегетарианское?'),
-				        recipe = prompt('Введите рецепт блюда');
-				    (vegetable === true) ? vegetable ='Да' : vegetable ='Нет';
-				    //вызываем метод чтобы добавить в список
-				    foodStorage.addValue(foodName, {'Вегетарианское': vegetable,
-				                                      'Рецепт': recipe});
-				}
-			}
-		}
-		function showInfo(type) {
-			if (type === 'drinks') {
-				let drinkName = prompt('Введите название напитка'),
-			        hasAlco = drinkStorage.getValue(drinkName)['Алкоголь'],
-			        recipe = drinkStorage.getValue(drinkName)['Рецепт'];
-			    if (drinkStorage.getValue(drinkName)) {
-			      console.log(
-			      'Напиток: ' + drinkName +
-			      '\nалкогольный: ' + hasAlco +
-			      '\nрецепт приготовления: ' + recipe);
-			      //если отменили ввод, то ничего не делаем
-			    } else if (drinkName === null) {
-			      //если нет такого напитка
-			    } else {
-			      console.log('Нет такого напитка в базе');
-			    }
-			} else {
-				let foodName = prompt('Введите название блюда'),
-			        vegetable = foodStorage.getValue(foodName)['Вегетарианское'],
-			        recipe = foodStorage.getValue(foodName)['Рецепт'];
-			    if (foodStorage.getValue(foodName)) {
-			      console.log(
-			      'Блюдо: ' + foodName +
-			      '\nвегетарианское: ' + vegetable +
-			      '\nрецепт приготовления: ' + recipe);
-			    } else if (foodName === null) {
-			    } else {
-			      console.log('Нет такого блюда в базе');
-			    }
-			}
-
-		}
-		function deleteItem(type) {
-			if (type === 'drinks') {
-				let drinkName = prompt('Введите название напитка');
-				let resultOfDelete = drinkStorage.deleteValue(drinkName);
-				(drinkName === null) ? {} :(resultOfDelete) ?
-				  console.log(`Напиток ${drinkName} удалён`) :
-				  console.log('Нет такого напитка чтобы удалить');
-			} else {
-				let foodName = prompt('Введите название блюда');
-				let resultOfDelete = foodStorage.deleteValue(foodName);
-				(foodName === null) ? {} :(resultOfDelete) ?
-				  console.log(`Блюдо ${foodName} удалено`) :
-				  console.log('Нет такого блюда чтобы удалить');
-			}
-
-		}
-		function getList(type) {
-			if (type === 'drinks') {
-			    drinkStorage.getKeys();
-			} else {
-				foodStorage.getKeys();
-			}
-
-		}
-
-
-
-	</script>
-
+	<input id="GET-FOOD" type="button" value="Ввести блюдо">
+	<input id="SHOW-FOOD" type="button" value="Инфо о блюде">
+	<input id="DEL-FOOD" type="button" value="Удалить блюдо">
+	<input id="LIST-FOOD" type="button" value="Список блюд">
+	<script type="module">
+	  	'use strict';
+	    import "./js/main.js";
+  	</script>
 </body>
 </html>
